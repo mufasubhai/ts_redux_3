@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("SQL_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+
+
+model Hierarchy {
+  hierarchyId Int     @id(map: "PK_Hierarchy") @map("hrchy_id")
+  subclass String? @db.VarChar(50) 
+  class    String? @db.VarChar(50) 
+  dept     String? @db.VarChar(50) 
+}
+
+
+model Product {
+  sku_id                   Float   @id(map: "PK_Product")  @map("sku_id")
+  style_id                 Float?  @map("style_id")
+  style_code               String? @db.VarChar(20)  @map("style_code")
+  style_desc_eng           String? @db.VarChar(120)  @map("style_desc_eng")
+  COLOR_ENG                String? @db.VarChar(20)  @map("COLOR_ENG")
+  STYLE_COLOR              String? @db.NVarChar(20) @map("STYLE_COLOR")
+  PRMRY_SIZE               String? @db.VarChar(8) @map("PRMRY_SIZE")
+  SIZE_VAL                 String? @db.VarChar(17) @map("SIZE_VAL")
+  PRMRY_VNDR_STYLE         String? @db.VarChar(40) @map("PRMRY_VNDR_STYLE ")
+  STYLE_COLOR_ORIG_ENT_PRC Float? @map("STYLE_COLOR_ORIG_ENT_PRC")
+  HRCHY_ID                 Int? @map("HRCHY_ID")
+  UPC_NUMBER               String? @db.NVarChar(14) @map("UPC_NUMBER")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model Sales {
+  skuId            BigInt?  @map("sku_id")
+  tranDate         DateTime?  @map("tran_date") 
+  tranNumber          String?   @db.VarChar(128)  @map("tran_no")
+  itemQuantity     Decimal?  @db.Decimal(11, 2)  @map("ITEM_QUANTITY")
+  itemExtAmount Decimal?  @db.Decimal(17, 6)  @map("ITEM_EXTENDED_AMT")
+  tranType         String?   @db.VarChar(32)  @map("tran_type")
+
+  @@ignore
+}
+
+
+model Date {
+  dateVal  DateTime @id(map: "PK_Date") @db.SmallDateTime @map("DATE_VAL")
+  dayEng   String?  @db.VarChar(20) @map("day_eng")
+  fiscalWeek String?  @db.VarChar(20) @map("fscl_week")
+  fiscalMonth String?  @db.VarChar(20) @map("fscl_month")
+  fiscalQuarter  String?  @db.VarChar(20) @map("FSCL_QTR")
+  fiscalYear Int? @db.SmallInt @map("FSCL_YEAR")
+}
+
+
+model OTBSampleHistory {
+  fiscalYear    Int    @db.SmallInt @map("FISCALYEAR")
+  fiscalQuarter String @db.NVarChar(50) @map("FISCALQUARTER")
+  fiscalMonth   String @db.NVarChar(50) @map("FISCALMONTH")
+  fiscalWeek    String @db.NVarChar(50) @map("FISCALWEEK")
+  deptName      String @db.NVarChar(50) @map("DEPTNAME")
+  className     String @db.NVarChar(50) @map("CLASSNAME")
+  priceStatus   String @db.NVarChar(50) @map("PRICESTATUS")
+  salesUnits    Int?
+  salesRetail   Float?
+  tranCount     Int?
+  salesCost     Float?
+  AIR           Float?
+  AUC           Float?
+  AUR           Float?
+  discountPerc     Float? @map("Discount%")
+  GMPerc           Float? @map("GM%")
+
+  @@id([fiscalYear, fiscalQuarter, fiscalMonth, fiscalWeek, deptName, className, priceStatus], map: "PK_OTB_Sample_Histories")
+
+  @@map("OTB_Sample_Histories")
+}
+

@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("SQL_URL")
+}
+
+
+model Date {
+  dateVal  DateTime @id(map: "PK_Date") @db.SmallDateTime @map("DATE_VAL")
+  dayEng   String?  @db.VarChar(20) @map("day_eng")
+  fiscalWeek String?  @db.VarChar(20) @map("fscl_week")
+  fiscalMonth String?  @db.VarChar(20) @map("fscl_month")
+  fiscalQuarter  String?  @db.VarChar(20) @map("FSCL_QTR")
+  fiscalYear Int? @db.SmallInt @map("FSCL_YEAR")
+}
+
+model OTBSampleHistory {
+  fiscalYear    Int    @db.SmallInt @map("FISCALYEAR")
+  fiscalQuarter String @db.NVarChar(50) @map("FISCALQUARTER")
+  fiscalMonth   String @db.NVarChar(50) @map("FISCALMONTH")
+  fiscalWeek    String @db.NVarChar(50) @map("FISCALWEEK")
+  deptName      String @db.NVarChar(50) @map("DEPTNAME")
+  className     String @db.NVarChar(50) @map("CLASSNAME")
+  priceStatus   String @db.NVarChar(50) @map("PRICESTATUS")
+  salesUnits    Int?
+  salesRetail   Float?
+  tranCount     Int?
+  salesCost     Float?
+  AIR           Float?
+  AUC           Float?
+  AUR           Float?
+  discountPerc     Float? @map("Discount%")
+  GMPerc           Float? @map("GM%")
+
+  @@id([fiscalYear, fiscalQuarter, fiscalMonth, fiscalWeek, deptName, className, priceStatus], map: "PK_OtbSampleHistory")
+
+  @@map("OTB_Sample_Histories")
+}
+
+
+model Product {
+  skuID               Float   @id(map: "PK_Product")  @map("sku_id")
+  styleId                 Float?  @map("style_id")
+  styleCode              String? @db.VarChar(20)  @map("style_code")
+  styleDescEng           String? @db.VarChar(120)  @map("style_desc_eng")
+  colorEng                String? @db.VarChar(20)  @map("COLOR_ENG")
+  styleColor              String? @db.NVarChar(20) @map("STYLE_COLOR")
+  primarySize               String? @db.VarChar(8) @map("PRMRY_SIZE")
+  sizeVal                 String? @db.VarChar(17) @map("SIZE_VAL")
+  primaryVendorStyle         String? @db.VarChar(40) @map("PRMRY_VNDR_STYLE ")
+  styleColorOrigEntPrice Float? @map("STYLE_COLOR_ORIG_ENT_PRC")
+  hierarchyID                 Int? @map("HRCHY_ID")
+  upcNum               String? @db.NVarChar(14) @map("UPC_NUMBER")
+}
+
+model Sales {
+  skuID            BigInt @map("sku_id") 
+  tranDate         DateTime @map("tran_date") 
+  store             String   @db.VarChar(10) 
+  tranNum           String   @db.VarChar(128)   @map("tran_no")
+  lineNum           Decimal  @db.Decimal(38, 0)   @map("line_no")
+  tranType         String   @db.VarChar(32)   @map("tran_type")
+  itemQuant     Decimal? @db.Decimal(11, 2)   @map("ITEM_QUANTITY")
+  itemExtAmt  Decimal? @db.Decimal(17, 6)  @map("ITEM_EXTENDED_AMT")
+
+  @@id([skuID, tranDate, store, tranNum, lineNum, tranType], map: "PK_Sales") 
+}
+
+
+
+model Session {
+  id         BigInt   @id(map: "id") @default(autoincrement())
+  sessionID String   @unique(map: "index_sessions_on_session_id") @db.NVarChar(4000)   @map("session_id")
+  data       String?  @db.NVarChar(Max)  
+  createdAt DateTime @db.DateTime  @map("created_at")
+  updatedAt DateTime @db.DateTime   @map("updated_at")
+
+  @@index([updatedAt], map: "index_sessions_on_updated_at")
+   @@map("sessions")
+}
+
+model TransferRecord {
+  transferRecordID         BigInt   @id(map: "PK_TransferRecord") @default(autoincrement()) @map("id")
+  userID    Int  @map("user_id")
+  userName  String?  @db.NVarChar(4000)   @map("user_name")
+  userEmail String?  @db.NVarChar(4000)   @map("user_email")
+  title      String   @db.NVarChar(4000)  
+  notes      String?  @db.NVarChar(Max)  
+  createdAt DateTime @db.DateTime  @map("created_at")
+  updatedAt DateTime @db.DateTime @map("updated_at")
+  bulk       String?  @db.NVarChar(4000) 
+  base64     String?  @db.NVarChar(4000)
+
+  @@index([title], map: "index_transfer_records_on_title")
+  @@index([userID], map: "index_transfer_records_on_user_id")
+   @@map("transfer_records")
+}
+
+model User {
+  userID          BigInt   @id(map: "PK_User") @default(autoincrement()) @map("id")
+  email         String   @db.NVarChar(4000)
+  displayName  String?  @db.NVarChar(4000) @map("display_name")
+  surname       String?  @db.NVarChar(4000)
+  givenName    String?  @db.NVarChar(4000) @map("given_name")
+  token         String?  @db.NVarChar(4000)
+  expires       Boolean?
+  provider      String?  @db.NVarChar(4000)
+  userTimezone String?  @db.NVarChar(4000) @map("user_timezone")
+  createdAt    DateTime @db.DateTime @map("created_at")
+  updatedAt    DateTime @db.DateTime @map("updated_at")
+  refreshToken String?  @db.NVarChar(4000) @map("refresh_token")
+  uid           String?  @db.NVarChar(4000)
+  expiresAt    Int? @map("expires_at")
+  @@map("users")
+}
+
+
+
+
+model Hierarchy {
+  hierarchyID  Int     @id(map: "PK_Hierarchy") @map("hrchy_id")
+  subclass String? @db.VarChar(50) 
+  class    String? @db.VarChar(50) 
+  dept     String? @db.VarChar(50) 
+}
+
+
+
+
