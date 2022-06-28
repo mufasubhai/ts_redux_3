@@ -4,22 +4,8 @@ import { useState, useEffect } from 'react';
 
 import Counter from '../features/counter/Counter'
 import styles from '../styles/Home.module.css'
-import store from 'src/app/store';
+
 const IndexPage: NextPage = () => {
-  const [stateSet, setStateSet ] = useState(false)
-  useEffect(() => {
-
-    if (window && !stateSet) {
-      window.getState = store.getState
-      setStateSet(true)
-      // initCosmos()
-    //  index.main()
-
-      // sqlQuery.clientDataPull()
-      // testQuery()
-    }
-  
-  }, [store])
 
   return (
     <div className={styles.container}>
@@ -76,4 +62,4 @@ const IndexPage: NextPage = () => {
   )
 }
 
-export default IndexPage
+export default IndexPage;

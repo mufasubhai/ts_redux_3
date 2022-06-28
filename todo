@@ -1,0 +1,4 @@
+Set u
+Set up quick API endpoints for params
+We probably don't need state for this? Can we build this into next for performance?
+Set up endpoints for constructing prisma queries with express. 

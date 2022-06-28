@@ -50,7 +50,7 @@ model Date {
   dateVal  DateTime @id(map: "PK_Date") @db.SmallDateTime @map("DATE_VAL")
   dayEng   String?  @db.VarChar(20) @map("day_eng")
   fiscalWeek String?  @db.VarChar(20) @map("fscl_week")
-  fiscalMonth String?  @db.VarChar(20) @map("fscl_month")
+  fiscalMonth String?  @db.VarChar(20) @map("fscl_mnth")
   fiscalQuarter  String?  @db.VarChar(20) @map("FSCL_QTR")
   fiscalYear Int? @db.SmallInt @map("FSCL_YEAR")
 }
