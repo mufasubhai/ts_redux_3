@@ -1,15 +1,8 @@
-
-import {DropdownItem} from './dropdownSlice'
-
-
-
-
+import {DropdownItem, toggleSelection} from './dropdownSlice'
 import React, { useState, useEffect } from "react";
 import onClickOutside from "react-onclickoutside";
-// import { connect } from "react-redux";
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { connect } from 'react-redux';
-
+import styles from './Dropdown.module.css'
 // let testValues = [
 //   { id: 1, value: "test1" },
 //   { id: 2, value: "test2" },
@@ -22,9 +15,9 @@ const mSTP = (state) => ({
 
 const mDTP = () => ({});
 
-const clickOutsideConfig = {
-  handleClickOutside: () => Dropdown.handleClickOutside,
-};
+// const clickOutsideConfig = {
+//   handleClickOutside: () => Dropdown.handleClickOutside,
+// };
 
 function Dropdown({
   type,
@@ -33,103 +26,65 @@ function Dropdown({
   selected,
   multiSelect = true,
   selectedStates,
+  // currentDepartment
 }) {
 
-
-  let currentDepartment = ["test"]
+  const dispatch = useAppDispatch()
+ 
   
   const [open, setOpen] = useState(false);
   const [selection, setSelection] = useState([]);
-  const [currentTitle, setCurrentTitle] = useState(title);
-  const toggle = (open) => setOpen(open);
+  // const [currentTitle, setCurrentTitle] = useState(title);
+  const toggle = (open) => setOpen(!open);
 
-  // useEffect(() => {
-  //   setSelection([]);
-  //   setCurrentTitle(title);
-  // }, [reset]);
 
-  useEffect(() => { 
+  function handleSelection( item : String, type: String) {
 
-    if (currentDepartment.length === 1) {
-      setCurrentTitle(currentDepartment[0])
-    } else if (currentDepartment.length === 0) {
-      setCurrentTitle('Select Department')
-    } else {
-      setCurrentTitle('Multiple Departments')
+    
+    console.log('handle selection')
+
+
+    let toggleItem :  DropdownItem= {
+      type: type,
+      val: item
     }
-  }, [currentDepartment])
 
-  Dropdown.handleClickOutside = (event) => {
-    setOpen(false);
-  };
+    console.log(toggleItem)
 
-  function handleOnClick(item) {
-    if (!selection.some((current) => current.id === item.id)) {
-      if (!multiSelect) {
-        setSelection([item]);
-        setCurrentTitle(item.value);
-      } else if (multiSelect) {
-        setSelection([...selection, item]);
-      }
-    } else {
-      let selectionAfterRemoval = selection;
-      selectionAfterRemoval = selectionAfterRemoval.filter(
-        (current) => current.id !== item.id
-      );
-      setSelection([...selectionAfterRemoval]);
-      setCurrentTitle(selection[0].value);
-    }
+    dispatch(toggleSelection(toggleItem))
+
   }
 
-  function handleSelection(item) {
-    handleOnClick(item);
-    toggle(!open);
-    if (item.action) {
-      item.action(item.value, currentDepartment);
-    }
-
-    if (item.action2) {
-      item.action2(item.value);
-    }
-
-    if (item.action3) {
-      if (selectedStates.includes(item.value)) {
-        item.action3(selectedStates.filter((el) => el != item.value));
-      } else {
-        item.action3(selectedStates.concat([item.value]));
-      }
-    }
-  }
-
-  function isItemInSelection(item) {
-    if (selection.some((current) => current.id === item.id)) {
+  function isItemInSelection(item : String) {
+    if (selected.some((current : String) => current === item)) {
+      console.log("FALSE")
       return true;
     }
     return false;
   }
 
   return (
-    <div className="dd-wrapper">
-
+    <div className={styles.ddwrapper}>
+      {console.log('selected')}
+      {console.log(selected)}
 
       <div
         tabIndex={0}
-        className="dd-header"
+        className={styles.ddheader}
         role="button"
-        onKeyPress={() => toggle(!open)}
-        onClick={() => toggle(!open)}
+        onClick={() => toggle(open)}
       >
 
-        <div className="dd-header__title">
-          <div className="dd-header__title--bold">{currentTitle}</div>
+        <div className={styles.ddheader__title}>
+          <div className={styles.ddheader__title}>{type}</div>
         </div>
-        <div className="dd-header__action"></div>
+        <div className={styles.ddheader__action}></div>
       </div>
       {open && (
-        <ul className="dd-list">
+        <ul className={styles.ddlist}>
           {items.map((item) => (
-            <li className="dd-list-item" key={item.id}>
-              <button type="button" onClick={() => handleSelection(item)}>
+            <li className={styles.ddlistitem} key={item}>
+              <button type="button" onClick={() => handleSelection(item, type)}>
                 <span>{item}</span>
                 <span>{isItemInSelection(item) && "✅"}</span>
               </button>
@@ -140,7 +95,4 @@ function Dropdown({
     </div>
   );
 }
-export default connect(
-  mSTP,
-  mDTP
-)(onClickOutside(Dropdown, clickOutsideConfig));
+export default(Dropdown);

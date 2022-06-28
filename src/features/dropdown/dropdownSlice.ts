@@ -39,12 +39,13 @@ export const dropdownSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    toggle: (state, action: PayloadAction<DropdownItem>) => {
+    toggleSelection: (state, action: PayloadAction<DropdownItem>) => {
 
+      console.log(action)
       // setting up reducer to handle both date and dept type values.
       let targetValues: Array<String> | undefined
 
-      if (action.payload.type === "dept") {
+      if (action.payload.type === "department") {
         targetValues = state.departmentValues;
       } else if (action.payload.type === "date") {
         targetValues = state.dateValues;
@@ -61,7 +62,7 @@ export const dropdownSlice = createSlice({
       }
 
 
-      if (action.payload.type === "dept") {
+      if (action.payload.type === "department") {
         state.departmentValues = targetValues
       } else if (action.payload.type === "date") {
         state.dateValues = targetValues
@@ -97,7 +98,7 @@ export const dropdownSlice = createSlice({
   // },
 })
 
-export const { toggle} = dropdownSlice.actions
+export const { toggleSelection} = dropdownSlice.actions
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

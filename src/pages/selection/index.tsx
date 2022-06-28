@@ -1,6 +1,6 @@
 // import { useState, useEffect } from 'react';
 import Dropdown from 'src/features/dropdown/Dropdown';
-// import styles from '../styles/Home.module.css'
+import styles from './Selection.module.css'
 import { PrismaClient } from '@prisma/client';
 import { GetStaticProps } from 'next';
 import { AppState } from 'src/app/store';
@@ -72,9 +72,12 @@ const selectionIndex = ({ departments, errors, dates }: Selectors) => {
 
 
 
+    <div className={styles.wrapper}>
 
-		{departments && departments.length > 0 ? <Dropdown type={"department"} items={departments} selected={departmentValues}/> : null}
-		{departments && departments.length > 0 ? <Dropdown type={"date"} items={dates} selected={dateValues}/> : null}
+		{departments && departments.length > 0 ? <Dropdown key={"department"} type={"department"} items={departments} selected={departmentValues}/> : null}
+		{departments && departments.length > 0 ? <Dropdown  key={"date"} type={"date"} items={dates} selected={dateValues}/> : null}
+
+    </div>
 		
 
 
