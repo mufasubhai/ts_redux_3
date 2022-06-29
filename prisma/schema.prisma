@@ -42,7 +42,7 @@ model OTBSampleHistory {
 
 
 model Product {
-  skuID               Float   @id(map: "PK_Product")  @map("sku_id")
+  skuID               BigInt @id(map: "PK_Product")  @map("sku_id")
   styleId                 Float?  @map("style_id")
   styleCode              String? @db.VarChar(20)  @map("style_code")
   styleDescEng           String? @db.VarChar(120)  @map("style_desc_eng")
@@ -53,7 +53,9 @@ model Product {
   primaryVendorStyle         String? @db.VarChar(40) @map("PRMRY_VNDR_STYLE ")
   styleColorOrigEntPrice Float? @map("STYLE_COLOR_ORIG_ENT_PRC")
   hierarchyID                 Int? @map("HRCHY_ID")
+  productHierarchy Hierarchy? @relation(fields: [hierarchyID], references: [hierarchyID])
   upcNum               String? @db.NVarChar(14) @map("UPC_NUMBER")
+  productSales Sales[]
 }
 
 model Sales {
@@ -65,6 +67,7 @@ model Sales {
   tranType         String   @db.VarChar(32)   @map("tran_type")
   itemQuant     Decimal? @db.Decimal(11, 2)   @map("ITEM_QUANTITY")
   itemExtAmt  Decimal? @db.Decimal(17, 6)  @map("ITEM_EXTENDED_AMT")
+  saleProduct   Product @relation(fields: [skuID], references: [skuID])
 
   @@id([skuID, tranDate, store, tranNum, lineNum, tranType], map: "PK_Sales") 
 }
@@ -125,8 +128,8 @@ model Hierarchy {
   subclass String? @db.VarChar(50) 
   class    String? @db.VarChar(50) 
   dept     String? @db.VarChar(50) 
+  hierarchyProducts Product[]
 }
-
 
 
 

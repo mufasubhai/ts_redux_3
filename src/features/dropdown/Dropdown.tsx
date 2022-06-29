@@ -33,8 +33,6 @@ function Dropdown({
  
   
   const [open, setOpen] = useState(false);
-  const [selection, setSelection] = useState([]);
-  // const [currentTitle, setCurrentTitle] = useState(title);
   const toggle = (open) => setOpen(!open);
 
 
@@ -65,8 +63,7 @@ function Dropdown({
 
   return (
     <div className={styles.ddwrapper}>
-      {console.log('selected')}
-      {console.log(selected)}
+
 
       <div
         tabIndex={0}
@@ -82,7 +79,7 @@ function Dropdown({
       </div>
       {open && (
         <ul className={styles.ddlist}>
-          {items.map((item) => (
+          {items.map((item : String) => (
             <li className={styles.ddlistitem} key={item}>
               <button type="button" onClick={() => handleSelection(item, type)}>
                 <span>{item}</span>

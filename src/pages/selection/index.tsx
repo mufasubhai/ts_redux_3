@@ -5,6 +5,9 @@ import { PrismaClient } from '@prisma/client';
 import { GetStaticProps } from 'next';
 import { AppState } from 'src/app/store';
 import { useSelector } from 'react-redux';
+// import useSWR from 'swr'
+
+
 
 type Selectors = {
 	departments?: Array<String>
@@ -60,15 +63,31 @@ const selectionIndex = ({ departments, errors, dates }: Selectors) => {
 	console.log(departments)
 	console.log(dates)
 
+  const searchFunc = (departments: Array<String>, dates: Array<String> ) => {
+    let startSeconds: Date;
+    let seconds:  Number | undefined | String;
+  
+    startSeconds = new Date()
+    
+    let newData = fetch('/api/sales_data', {method: "POST", body: JSON.stringify({
+      departments: departments,
+      dates: dates
+    })}).then(res =>res.json()).then(data => {
+      console.log(data)
+
+      seconds = parseFloat((new Date() - startSeconds) / 1000)
+
+      console.log(`\tQuery returned in ${seconds} seconds`)
+    })
+
+  }
+
  const dateValues = useSelector((state: AppState) => state.dropdown.dateValues) 
  const departmentValues = useSelector((state: AppState) => state.dropdown.departmentValues) 
 
 
   return (
     <div className={"Wrapper"}>
-
-    {console.log(departmentValues)}
-    {console.log(dateValues)}
 
 
 
@@ -77,8 +96,14 @@ const selectionIndex = ({ departments, errors, dates }: Selectors) => {
 		{departments && departments.length > 0 ? <Dropdown key={"department"} type={"department"} items={departments} selected={departmentValues}/> : null}
 		{departments && departments.length > 0 ? <Dropdown  key={"date"} type={"date"} items={dates} selected={dateValues}/> : null}
 
+
+
+    {((departmentValues.length > 0) &&( dateValues.length > 0)) ? <button onClick={() => searchFunc(departmentValues, dateValues)}>Search</button> : null} 
     </div>
 		
+
+
+
 
 
 	{errors ? <>error</> : null}

@@ -14,6 +14,7 @@ import appConfig from "../../../app/appConfig";
 export default async function handle(_req: NextApiRequest, res: NextApiResponse) {
   console.log("HERE")
   console.log(_req.method)
+  let prisma = new  PrismaClient
 
   if (_req.method === "GET") {
     const otb = await prisma.oTBSampleHistory.findMany()
